@@ -1,0 +1,44 @@
+package sg.totalebizsolutions.zimmer.views.explorer.file;
+
+import android.support.v7.widget.RecyclerView;
+
+import com.google.common.base.Objects;
+
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.core.file.File;
+import sg.totalebizsolutions.zimmer.core.file.FileConstants;
+import sg.totalebizsolutions.zimmer.databinding.FileItemBinding;
+import sg.totalebizsolutions.zimmer.views.categories.CategoryMetaData;
+
+class FileViewHolder extends RecyclerView.ViewHolder
+{
+  /* Properties */
+
+  private FileItemBinding m_binding;
+
+  /* Initializations */
+
+  FileViewHolder (FileItemBinding binding)
+  {
+    super(binding.getRoot());
+    m_binding = binding;
+  }
+
+  void onBind (int position, File file)
+  {
+    String format = file.getFormat();
+
+    int iconResID =  Objects.equal(format, FileConstants.FORMAT_PDF) ? R.drawable.ic_pdf
+                   : Objects.equal(format, FileConstants.FORMAT_MP4) ? R.drawable.ic_video
+                   : Objects.equal(format, FileConstants.FORMAT_MPG) ? R.drawable.ic_video
+                   : Objects.equal(format, FileConstants.FORMAT_DOCS) ? R.drawable.ic_docs
+                   : Objects.equal(format, FileConstants.FORMAT_XLS) ? R.drawable.ic_xls
+                   : Objects.equal(format, FileConstants.FORMAT_PPT) ? R.drawable.ic_ppt
+                   : 0;
+
+    m_binding.colorView.setBackgroundResource(
+        CategoryMetaData.colorResIDForCategory(file.getCategory()));
+    m_binding.imageView.setImageResource(iconResID);
+    m_binding.titleTextView.setText(file.getDisplayName());
+  }
+}

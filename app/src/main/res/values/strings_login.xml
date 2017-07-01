@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="login">Login</string>
+  <string name="login_username">Username</string>
+  <string name="login_password">Password</string>
+
+  <string name="login_invalid">Invalid login/password.</string>
+  <string name="login_progress">Logging in. Please wait&#8230;</string>
+  <string name="pdf_progress">Loding pdf. Please wait&#8230;</string>
+  <string name="file_notfound">File not found.</string>
+  <string name="video_playing_error">Oops An Error Occur While Playing Video…!!!</string>
+
+  <string name="login_sign_out_confirmation">Are you sure you want to Sign Out?</string>
+  <string name="login_sign_out_successful">You have successfully logged out.</string>
+  <string name="login_session_timeout">Your session has expired. Please login again.</string>
+
+  <string name="login_in_progress">Logging in&#8230; Please wait.</string>
+
+  <string name="login_error_credential_required">Username and Password are required</string>
+  <string name="login_error_invalid_credentials">Your User ID and/or Password are invalid.</string>
+</resources>

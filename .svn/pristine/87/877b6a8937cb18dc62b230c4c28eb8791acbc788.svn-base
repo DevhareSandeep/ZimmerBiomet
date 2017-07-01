@@ -1,0 +1,5 @@
+package sg.totalebizsolutions.zimmer.views.explorer.file.details;
+
+public class MPGFileFragment extends FileFragment
+{
+}

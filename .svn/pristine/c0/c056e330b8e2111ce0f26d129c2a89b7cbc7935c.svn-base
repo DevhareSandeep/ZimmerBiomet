@@ -1,0 +1,254 @@
+package sg.totalebizsolutions.zimmer.core.file;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.common.base.Objects;
+
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class File extends RealmObject implements Parcelable
+{
+  public final class Properties
+  {
+    public static final String PROP_ID = "ID";
+    public static final String PROP_DISPLAY_NAME = "displayName";
+    public static final String PROP_FILE_NAME = "fileName";
+    public static final String PROP_FORMAT = "format";
+    public static final String PROP_LEVEL = "level";
+    public static final String PROP_CATEGORY = "category";
+  }
+
+  @PrimaryKey
+  private long ID;
+
+  private String displayName;
+  private String fileName;
+  private String format;
+  private int level;
+  private String category;
+
+  private File parent;
+  private RealmList<File> subFiles;
+
+  public File ()
+  {
+  }
+
+  public File (long ID, String displayName, String fileName, String format, int level,
+      String category, File parent, RealmList<File> subFiles)
+  {
+    this.ID = ID;
+    this.displayName = displayName;
+    this.fileName = fileName;
+    this.format = format;
+    this.level = level;
+    this.category = category;
+    this.parent = parent;
+    this.subFiles = subFiles;
+  }
+
+  public long getID ()
+  {
+    return ID;
+  }
+
+  public void setID (long ID)
+  {
+    this.ID = ID;
+  }
+
+  public String getDisplayName ()
+  {
+    return displayName;
+  }
+
+  public void setDisplayName (String displayName)
+  {
+    this.displayName = displayName;
+  }
+
+  public String getFileName ()
+  {
+    return fileName;
+  }
+
+  public void setFileName (String fileName)
+  {
+    this.fileName = fileName;
+  }
+
+  public String getFormat ()
+  {
+    return format;
+  }
+
+  public void setFormat (String format)
+  {
+    this.format = format;
+  }
+
+  public int getLevel ()
+  {
+    return level;
+  }
+
+  public void setLevel (int level)
+  {
+    this.level = level;
+  }
+
+  public String getCategory ()
+  {
+    return category;
+  }
+
+  public void setCategory (String category)
+  {
+    this.category = category;
+  }
+
+  public File getParent ()
+  {
+    return parent;
+  }
+
+  public void setParent (File parent)
+  {
+    this.parent = parent;
+  }
+
+  public RealmList<File> getSubFiles ()
+  {
+    return subFiles == null ? new RealmList<>() : subFiles;
+  }
+
+  public void setSubFiles (RealmList<File> subFiles)
+  {
+    this.subFiles = subFiles;
+  }
+
+  @Override
+  public boolean equals (Object obj)
+  {
+    if (obj == this)
+    {
+      return true;
+    }
+
+    if (!(obj instanceof File))
+    {
+      return false;
+    }
+
+    File file = (File) obj;
+    return   Objects.equal(getID(), file.getID())
+          && Objects.equal(getFileName(), file.getFileName())
+          && Objects.equal(getDisplayName(), file.getDisplayName())
+          && Objects.equal(getCategory(), file.getCategory())
+          && Objects.equal(getFormat(), file.getFormat());
+  }
+
+  public File copy ()
+  {
+    RealmList<File> copyOfSubFiles = new RealmList<>();
+
+    /* Cline first level sub files only. */
+    for (File file : getSubFiles())
+    {
+      copyOfSubFiles.add(new File(file.getID(), file.getDisplayName(), file.getFileName(),
+          file.getFormat(), file.getLevel(), file.getCategory(), file.copyParent(),
+          new RealmList<>()));
+    }
+
+    File parent = copyParent();
+
+    return new File(getID(), getDisplayName(), getFileName(), getFormat(), getLevel(),
+        getCategory(), parent, copyOfSubFiles);
+  }
+
+  private File copyParent ()
+  {
+    File parent = getParent();
+    if (parent != null)
+    {
+      File superParent = parent.getParent();
+      if (superParent != null)
+      {
+        superParent = superParent.copyParent();
+      }
+
+      parent = new File(parent.getID(), parent.getDisplayName(), parent.getFileName(),
+          parent.getFormat(), parent.getLevel(), getCategory(), superParent, null);
+    }
+    return parent;
+  }
+
+  public File deepCopy ()
+  {
+    RealmList<File> copyOfSubFiles = new RealmList<>();
+
+    /* Cline first level sub files only. */
+    for (File file : getSubFiles())
+    {
+      copyOfSubFiles.add(file.deepCopy());
+    }
+
+    File parent = copyParent();
+
+    return new File(getID(), getDisplayName(), getFileName(), getFormat(), getLevel(),
+        getCategory(), parent, copyOfSubFiles);
+  }
+
+  /* Parcelable methods */
+
+  @Override
+  public int describeContents ()
+  {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel (Parcel dest, int flags)
+  {
+    dest.writeLong(ID);
+    dest.writeString(displayName);
+    dest.writeString(fileName);
+    dest.writeString(format);
+    dest.writeInt(level);
+    dest.writeString(category);
+    dest.writeParcelable(parent, flags);
+    dest.writeList(getSubFiles());
+  }
+
+  protected File (Parcel in)
+  {
+    ID = in.readLong();
+    displayName = in.readString();
+    fileName = in.readString();
+    format = in.readString();
+    level = in.readInt();
+    category = in.readString();
+    parent = in.readParcelable(File.class.getClassLoader());
+
+    subFiles = new RealmList<>();
+    in.readList(subFiles, File.class.getClassLoader());
+  }
+
+  public static final Creator<File> CREATOR = new Creator<File>()
+  {
+    @Override
+    public File createFromParcel (Parcel in)
+    {
+      return new File(in);
+    }
+
+    @Override
+    public File[] newArray (int size)
+    {
+      return new File[size];
+    }
+  };
+}

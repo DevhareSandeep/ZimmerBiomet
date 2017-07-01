@@ -1,0 +1,8 @@
+package sg.totalebizsolutions.zimmer.views.explorer;
+
+import sg.totalebizsolutions.zimmer.core.file.File;
+
+public interface OnFileClickListener
+{
+  void onFileClicked (File file);
+}

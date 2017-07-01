@@ -1,0 +1,100 @@
+package sg.totalebizsolutions.zimmer.views.categories;
+
+import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import sg.totalebizsolutions.foundation.view.navigation.NavigationItemFragment;
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.databinding.CategoriesFragmentBinding;
+import sg.totalebizsolutions.zimmer.databinding.CategoryItemBinding;
+import sg.totalebizsolutions.zimmer.misc.widgets.LinearDividerItemDecoration;
+
+public class CategoriesFragment extends NavigationItemFragment
+{
+  /* Life-cycle callbacks */
+
+  @Nullable
+  @Override
+  public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState)
+  {
+    final Context context = getContext();
+
+    /* Setup view. */
+    CategoriesFragmentBinding binding =
+        DataBindingUtil.inflate(inflater, R.layout.categories_fragment, container, false);
+
+    binding.recyclerView.setAdapter(new InternalRecyclerAdapter());
+    binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+    binding.recyclerView.addItemDecoration(new LinearDividerItemDecoration());
+
+    Toolbar toolbar = getToolbar();
+    toolbar.setTitle(R.string.category_title);
+
+    return binding.getRoot();
+  }
+
+  private class InternalRecyclerAdapter extends RecyclerView.Adapter
+  {
+    @Override
+    public int getItemCount ()
+    {
+      return CategoryMetaData.CATEGORIES.length;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent, int viewType)
+    {
+      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+      CategoryItemBinding binding =
+          DataBindingUtil.inflate(inflater, R.layout.category_item, parent, false);
+      return new InternalViewHolder(binding);
+    }
+
+    @Override
+    public void onBindViewHolder (RecyclerView.ViewHolder holder, int position)
+    {
+      ((InternalViewHolder) holder).onBind(position);
+
+      holder.itemView.setOnClickListener(v ->
+      {
+        String category = CategoryMetaData.CATEGORIES[position];
+        if (CategoryMetaData.SELECTED_CATEGORIES.contains(category))
+        {
+          CategoryMetaData.SELECTED_CATEGORIES.remove(category);
+        }
+        else
+        {
+          CategoryMetaData.SELECTED_CATEGORIES.add(category);
+        }
+        notifyItemChanged(position);
+      });
+    }
+  }
+
+  private class InternalViewHolder extends RecyclerView.ViewHolder
+  {
+    private CategoryItemBinding m_binding;
+
+    InternalViewHolder (CategoryItemBinding binding)
+    {
+      super(binding.getRoot());
+      m_binding = binding;
+    }
+
+    void onBind (int position)
+    {
+      String category = CategoryMetaData.CATEGORIES[position];
+      itemView.setSelected(CategoryMetaData.SELECTED_CATEGORIES.contains(category));
+      m_binding.titleTextView.setText(category);
+    }
+  }
+}

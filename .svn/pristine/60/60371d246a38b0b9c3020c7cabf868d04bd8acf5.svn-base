@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <public name="content" type="id"/>
+  <public name="tab_container" type="id"/>
+
+  <public name="fragment_pop_enter" type="anim"/>
+  <public name="fragment_pop_exit" type="anim"/>
+  <public name="fragment_push_enter" type="anim"/>
+  <public name="fragment_push_exit" type="anim"/>
+  <public name="activity_show" type="anim"/>
+  <public name="activity_exit" type="anim"/>
+  <public name="activity_present_enter" type="anim"/>
+  <public name="activity_present_exit" type="anim"/>
+  <public name="activity_dismiss_enter" type="anim"/>
+  <public name="activity_dismiss_exit" type="anim"/>
+</resources>

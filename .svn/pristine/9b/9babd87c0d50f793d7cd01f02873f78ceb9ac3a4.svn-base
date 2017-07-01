@@ -1,0 +1,42 @@
+package sg.totalebizsolutions.zimmer.views.categories;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.core.file.FileConstants;
+
+public class CategoryMetaData
+{
+  public static final List<String> SELECTED_CATEGORIES = new ArrayList<>();
+
+  private static final Map<String, Integer> COLOR_MAP = new HashMap<>();
+
+  public static final String[] CATEGORIES = new String[]
+  {
+      FileConstants.CAT_BRANDS,
+      FileConstants.CAT_MARCOM,
+      FileConstants.CAT_CATALOGUE,
+      FileConstants.CAT_TRAINING,
+      FileConstants.CAT_PRODUCTS
+  };
+
+  static
+  {
+    COLOR_MAP.put(FileConstants.EXTREMITIES, R.color.extremities);
+    COLOR_MAP.put(FileConstants.SUBCHONDROPLASTY, R.color.subchin);
+    COLOR_MAP.put(FileConstants.SPORTSMED, R.color.sportsmed);
+  }
+
+  public static int colorResIDForCategory (String category)
+  {
+    int colorResID = R.color.black;
+    if (COLOR_MAP.containsKey(category))
+    {
+      colorResID = COLOR_MAP.get(category);
+    }
+    return colorResID;
+  }
+}

@@ -1,0 +1,192 @@
+package sg.totalebizsolutions.zimmer.core.file.commands;
+
+import android.content.Context;
+import android.support.annotation.IntRange;
+
+import com.google.common.base.Objects;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import io.realm.RealmList;
+import sg.totalebizsolutions.foundation.util.Validation;
+import sg.totalebizsolutions.zimmer.core.file.File;
+import sg.totalebizsolutions.zimmer.core.file.FileConstants;
+import sg.totalebizsolutions.zimmer.core.file.storage.FileStorage;
+import sg.totalebizsolutions.zimmer.util.Logger;
+
+public class DemoInitCmd implements Runnable
+{
+  /* Properties */
+
+  private long m_id = 3L;
+
+  private Context m_context;
+  private FileStorage m_storage;
+
+  /* Initializations */
+
+  public DemoInitCmd (Context context, FileStorage storage)
+  {
+    m_context = context;
+    m_storage = storage;
+  }
+
+  @Override
+  public void run ()
+  {
+    InputStream is = null;
+    BufferedReader br = null;
+    try
+    {
+      is = m_context.getAssets().open("index.json");
+      br = new BufferedReader(new InputStreamReader(is));
+
+      StringBuilder builder = new StringBuilder();
+
+      String line;
+      while ((line = br.readLine()) != null)
+      {
+        builder.append(line);
+      }
+
+      GsonBuilder gsonBuilder = new GsonBuilder();
+      gsonBuilder.setFieldNamingPolicy(FieldNamingPolicy.UPPER_CAMEL_CASE);
+      Gson gson = gsonBuilder.create();
+
+      Type collectionType = new TypeToken<List<FileTemplate>>(){}.getType();
+      List<FileTemplate> fileTemplates = gson.fromJson(builder.toString(), collectionType);
+
+      List<File> files = new ArrayList<>();
+      Map<String, File> mapFile = new HashMap<>();
+
+      for (FileTemplate template : fileTemplates)
+      {
+        String mainCatKey = String.format(Locale.US, "1-%s", template.level1);
+        File parent = mapFile.get(mainCatKey);
+        if (parent == null)
+        {
+          long catID =
+                Objects.equal(FileConstants.EXTREMITIES, template.level1) ? FileConstants.ID_EXTREMITIES
+              : Objects.equal(FileConstants.SPORTSMED, template.level1) ? FileConstants.ID_SPORTSMED
+              : FileConstants.ID_SUBCHIN;
+
+          parent = new File(catID, template.level1, "", FileConstants.FORMAT_CATEGORY, 0,
+              template.level1, null, new RealmList<>());
+          mapFile.put(mainCatKey, parent);
+          files.add(parent);
+
+          Logger.debug("Insert: Cat, " + mainCatKey);
+        }
+
+        parent = processCategories(parent, 2, template, files, mapFile);
+
+        File file = new File(m_id, template.displayName, template.fileName, template.format,
+            parent.getLevel() + 1, template.level1, parent, null);
+        files.add(file);
+
+        /* Add to parent. */
+        List<File> subFiles = parent.getSubFiles();
+        subFiles.add(file);
+
+        Logger.debug("Insert: File, " + template.displayName + " Parent: " + parent.getID());
+        m_id++;
+      }
+
+      m_storage.bulkInsertOrReplace(files);
+    }
+    catch (IOException e)
+    {
+      e.printStackTrace();
+    }
+    finally
+    {
+      if (br != null)
+      {
+        try
+        {
+          br.close();
+        }
+        catch (IOException e)
+        {
+          e.printStackTrace();
+        }
+      }
+
+      if (is != null)
+      {
+        try
+        {
+          is.close();
+        }
+        catch (IOException e)
+        {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
+  /**
+   * Recursive method to process category levels.
+   */
+  private File processCategories (File parent, @IntRange(from = 2) int level, FileTemplate template,
+                                  List<File> files, Map<String, File> fileMap)
+  {
+    String levelName =  level == 2 ? template.level2
+                      : level == 3 ? template.level3
+                      : level == 4 ? template.level4
+                      : level == 5 ? template.level5
+                      : level == 6 ? template.level6
+                      : "";
+
+    if (Validation.isEmpty(levelName))
+    {
+      return parent;
+    }
+
+    String key = String.format(Locale.US, "%d-%d-%s", parent.getID(), level, levelName);
+    File category = fileMap.get(key);
+    if (category == null)
+    {
+      category = new File(m_id, levelName, "", FileConstants.FORMAT_CATEGORY, level,
+          template.level1, parent, new RealmList<>());
+      fileMap.put(key, category);
+      files.add(category);
+
+      /* Add to parent. */
+      List<File> subFiles = parent.getSubFiles();
+      subFiles.add(category);
+
+      m_id++;
+
+      Logger.debug("Insert: Cat, " + key + " Parent, " + parent.getID());
+    }
+    return processCategories(category, level + 1, template, files, fileMap);
+  }
+
+  private class FileTemplate
+  {
+    String fileName;
+    String displayName;
+    String format;
+    String level1;
+    String level2;
+    String level3;
+    String level4;
+    String level5;
+    String level6;
+  }
+}

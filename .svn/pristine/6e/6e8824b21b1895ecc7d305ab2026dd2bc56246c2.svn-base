@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical">
+    <FrameLayout android:id="@+id/content"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:layout_above="@+id/breadcrumbs"/>
+    <sg.totalebizsolutions.zimmer.views.explorer.Breadcrumbs android:id="@+id/breadcrumbs"
+                                                             android:layout_width="match_parent"
+                                                             android:layout_height="35dp"
+                                                             android:layout_above="@+id/tab_container"/>
+    <LinearLayout android:id="@+id/tab_container"
+                  android:layout_width="match_parent"
+                  android:layout_height="60dp"
+                  android:layout_alignParentBottom="true"
+                  android:background="@color/white"
+                  android:orientation="horizontal"
+                  android:paddingLeft="22dp"
+                  android:paddingRight="22dp"/>
+    <View android:layout_width="match_parent"
+          android:layout_height="1px"
+          android:layout_above="@id/tab_container"
+          android:background="#E1E1E1"/>
+  </RelativeLayout>
+</layout>

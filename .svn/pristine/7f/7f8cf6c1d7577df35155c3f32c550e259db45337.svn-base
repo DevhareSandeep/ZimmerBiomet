@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+  <data>
+    <import type="sg.totalebizsolutions.zimmer.util.TypefaceFactory"/>
+  </data>
+  <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                               android:layout_width="match_parent"
+                                               android:layout_height="match_parent"
+                                               android:animateLayoutChanges="true">
+    <View android:layout_width="0dp"
+          android:layout_height="44dp"
+          android:background="#c3c3c7"
+          app:layout_constraintLeft_toLeftOf="parent"
+          app:layout_constraintRight_toRightOf="parent"
+          app:layout_constraintTop_toTopOf="parent"/>
+    <EditText android:id="@+id/search_edit_text"
+              android:layout_width="0dp"
+              android:layout_height="28dp"
+              android:layout_margin="8dp"
+              android:background="@drawable/search_text_field_bg"
+              android:drawableLeft="@drawable/ic_search"
+              android:drawablePadding="8dp"
+              android:hint="@string/search"
+              android:imeOptions="actionSearch"
+              android:paddingLeft="8dp"
+              android:paddingRight="8dp"
+              android:typeface="@{TypefaceFactory.getTypeFaceForId(context, TypefaceFactory.RobotoRegular)}"
+              android:singleLine="true"
+              android:textColor="@color/dark"
+              android:textColorHint="@color/hint"
+              android:textSize="14dp"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintRight_toRightOf="parent"
+              app:layout_constraintTop_toTopOf="parent"
+              tools:ignore="RtlHardcoded,SpUsage"/>
+    <include android:id="@+id/search_header"
+             layout="@layout/search_header"
+             android:layout_width="0dp"
+             android:layout_height="30dp"
+             android:layout_marginTop="44dp"
+             android:visibility="gone"
+             app:layout_constraintLeft_toLeftOf="parent"
+             app:layout_constraintRight_toRightOf="parent"
+             app:layout_constraintTop_toTopOf="parent"/>
+    <android.support.v7.widget.RecyclerView android:id="@+id/recycler_view"
+                                            android:layout_width="0dp"
+                                            android:layout_height="0dp"
+                                            app:layout_constraintBottom_toBottomOf="parent"
+                                            app:layout_constraintLeft_toLeftOf="parent"
+                                            app:layout_constraintRight_toRightOf="parent"
+                                            app:layout_constraintTop_toBottomOf="@+id/search_header"
+                                            app:layout_goneMarginTop="44dp"/>
+  </android.support.constraint.ConstraintLayout>
+</layout>

@@ -1,0 +1,50 @@
+package sg.totalebizsolutions.zimmer.core.file;
+
+import android.support.annotation.IntDef;
+import android.support.annotation.StringDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+public class FileConstants
+{
+  public static final int ID_EXTREMITIES = 0;
+  public static final int ID_SUBCHIN = 1;
+  public static final int ID_SPORTSMED = 2;
+
+  public static final String EXTREMITIES = "Extremities";
+  public static final String SPORTSMED = "Sportsmed";
+  public static final String SUBCHONDROPLASTY = "Subchondroplasty";
+
+  public static final String CAT_BRANDS = "Brands";
+  public static final String CAT_MARCOM = "MarCom";
+  public static final String CAT_TRAINING = "Training";
+  public static final String CAT_PRODUCTS = "Products";
+  public static final String CAT_CATALOGUE = "Catalogue";
+
+  public static final String FORMAT_CATEGORY = "CATEGORY";
+  public static final String FORMAT_PDF = "PDF";
+  public static final String FORMAT_MP4 = "MP4";
+  public static final String FORMAT_MPG = "MPG";
+  public static final String FORMAT_DOCS = "DOCX";
+  public static final String FORMAT_XLS = "XLSX";
+  public static final String FORMAT_PPT = "PPT";
+
+  @Retention(RetentionPolicy.SOURCE)
+  @StringDef({FORMAT_CATEGORY, FORMAT_PDF, FORMAT_DOCS, FORMAT_XLS, FORMAT_PPT, FORMAT_MP4, FORMAT_MPG})
+  public @interface Format
+  {
+  }
+
+  @Retention(RetentionPolicy.SOURCE)
+  @IntDef({FileConstants.ID_EXTREMITIES, FileConstants.ID_SUBCHIN, FileConstants.ID_SPORTSMED})
+  public @interface RootFolderID
+  {
+  }
+
+  @Retention(RetentionPolicy.SOURCE)
+  @StringDef({CAT_BRANDS, CAT_CATALOGUE, CAT_MARCOM, CAT_PRODUCTS, CAT_TRAINING})
+  public @interface Categories
+  {
+  }
+}

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
+  <data>
+    <import type="sg.totalebizsolutions.zimmer.util.TypefaceFactory"/>
+  </data>
+  <merge>
+    <HorizontalScrollView android:id="@+id/horizontal_scroll_view"
+                          android:layout_width="match_parent"
+                          android:layout_height="match_parent"
+                          android:clipChildren="false"
+                          android:layout_toRightOf="@+id/category_text_view"
+                          tools:ignore="RtlHardcoded">
+      <LinearLayout android:id="@+id/container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"/>
+    </HorizontalScrollView>
+    <ImageView android:id="@+id/home_image_view"
+               android:layout_width="wrap_content"
+               android:layout_height="match_parent"
+               android:background="@drawable/breadcrumbs_home_bg"
+               android:contentDescription="@null"
+               android:paddingRight="12dp"
+               android:scaleType="center"
+               android:src="@drawable/breadcrumbs_home_icon"
+               tools:ignore="RtlHardcoded,RtlSymmetry"/>
+    <TextView android:id="@+id/category_text_view"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:layout_marginLeft="-19dp"
+              android:layout_toRightOf="@+id/home_image_view"
+              android:background="@drawable/breadcrumbs_category_bg"
+              android:gravity="center"
+              android:textColor="@color/white"
+              android:textSize="12dp"
+              android:typeface="@{TypefaceFactory.getTypeFaceForId(context, TypefaceFactory.RobotoRegular)}"
+              tools:ignore="RtlHardcoded,SpUsage"
+              tools:text="Extremities"/>
+  </merge>
+</layout>

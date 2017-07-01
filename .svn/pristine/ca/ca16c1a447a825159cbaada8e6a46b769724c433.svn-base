@@ -1,0 +1,107 @@
+package sg.totalebizsolutions.zimmer.views.explorer.file.details;
+
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.google.common.base.Objects;
+
+import sg.totalebizsolutions.foundation.view.navigation.NavigationItemFragment;
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.core.file.File;
+import sg.totalebizsolutions.zimmer.core.file.FileConstants;
+import sg.totalebizsolutions.zimmer.databinding.FileFragmentBinding;
+
+public class FileFragment extends NavigationItemFragment
+{
+  /* Properties */
+
+  private static final String BUNDLE_FILE = "file";
+
+  private File m_file;
+
+  /* Creational */
+
+  public static FileFragment newInstance (File file)
+  {
+    FileFragment fragment = new FileFragment();
+    Bundle args = new Bundle();
+    args.putParcelable(BUNDLE_FILE, file);
+    fragment.setArguments(args);
+    return fragment;
+  }
+
+  /* Life-cycle methods */
+
+  @Override
+  public void onCreate (Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    Bundle args = getArguments();
+    m_file = args.getParcelable(BUNDLE_FILE);
+  }
+
+  @Nullable
+  @Override
+  public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState)
+  {
+    /* Setup view. */
+    FileFragmentBinding binding =
+        DataBindingUtil.inflate(inflater, R.layout.file_fragment, container, false);
+
+    String format = m_file.getFormat();
+
+    int iconResID =  Objects.equal(format, FileConstants.FORMAT_PDF) ? R.drawable.ic_pdf
+                   : Objects.equal(format, FileConstants.FORMAT_MP4) ? R.drawable.ic_video
+                   : Objects.equal(format, FileConstants.FORMAT_MPG) ? R.drawable.ic_video
+                   : Objects.equal(format, FileConstants.FORMAT_DOCS) ? R.drawable.ic_docs
+                   : Objects.equal(format, FileConstants.FORMAT_XLS) ? R.drawable.ic_xls
+                   : Objects.equal(format, FileConstants.FORMAT_PPT) ? R.drawable.ic_ppt
+                   : 0;
+    binding.imageView.setImageResource(iconResID);
+
+    binding.fileNameTextView.setText(m_file.getDisplayName());
+
+    StringBuilder builder = new StringBuilder();
+    buildBreadcrumbs(m_file, builder);
+    binding.breadcrumbsTextView.setText(builder.toString());
+
+    binding.formatTextView.setText(m_file.getFileName());
+
+    Toolbar toolbar = getToolbar();
+    toolbar.setTitle(m_file.getDisplayName());
+    toolbar.inflateMenu(R.menu.share);
+    toolbar.setOnMenuItemClickListener(menuItem ->
+    {
+      Intent shareIntent = new Intent();
+      shareIntent.setAction(Intent.ACTION_SEND);
+      shareIntent.putExtra(Intent.EXTRA_STREAM, "Share from Zimmer mobile app.");
+      shareIntent.setType("text/plain");
+      startActivity(shareIntent);
+      return true;
+    });
+
+    return binding.getRoot();
+  }
+
+  private void buildBreadcrumbs (File file, StringBuilder builder)
+  {
+    File parent = file.getParent();
+    if (parent != null)
+    {
+      buildBreadcrumbs(parent, builder);
+
+      if (builder.length() > 0)
+      {
+        builder.append(" > ");
+      }
+      builder.append(parent.getDisplayName());
+    }
+  }
+}

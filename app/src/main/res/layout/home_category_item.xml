@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+  <data>
+    <import type="sg.totalebizsolutions.genie.util.TypefaceFactory"/>
+  </data>
+  <RelativeLayout android:layout_width="wrap_content"
+                  android:layout_height="24dp"
+                  android:background="@drawable/category_item_bg">
+    <TextView android:id="@+id/title_text_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_centerInParent="true"
+              android:layout_centerVertical="true"
+              android:layout_marginLeft="8dp"
+              android:layout_toLeftOf="@+id/remove_image_view"
+              android:ellipsize="end"
+              android:gravity="center"
+              android:maxLines="1"
+              android:singleLine="true"
+              android:textColor="@color/white"
+              android:textSize="14dp"
+              android:typeface="@{TypefaceFactory.getTypeFaceForId(context, TypefaceFactory.RobotoRegular)}"
+              tools:ignore="RtlHardcoded,SpUsage"
+              tools:text="Lorem Impsum"/>
+    <ImageView android:id="@+id/remove_image_view"
+               android:layout_width="18dp"
+               android:layout_height="18dp"
+               android:layout_alignParentRight="true"
+               android:layout_centerVertical="true"
+               android:layout_marginLeft="4dp"
+               android:layout_marginRight="4dp"
+               android:contentDescription="@null"
+               android:duplicateParentState="true"
+               android:src="@drawable/ic_remove_category"
+               tools:ignore="RtlHardcoded"/>
+  </RelativeLayout>
+</layout>

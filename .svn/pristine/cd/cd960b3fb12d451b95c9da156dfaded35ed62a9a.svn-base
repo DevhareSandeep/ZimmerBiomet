@@ -1,0 +1,104 @@
+package sg.totalebizsolutions.zimmer.views.explorer.file;
+
+import android.databinding.DataBindingUtil;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+
+import com.google.common.base.Objects;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.core.file.File;
+import sg.totalebizsolutions.zimmer.core.file.FileConstants;
+import sg.totalebizsolutions.zimmer.databinding.FileCategoryItemBinding;
+import sg.totalebizsolutions.zimmer.databinding.FileItemBinding;
+import sg.totalebizsolutions.zimmer.views.explorer.OnFileClickListener;
+
+public class BrowserRecyclerAdapter extends RecyclerView.Adapter
+{
+  /* Properties */
+
+  private OnFileClickListener m_clickListener;
+  private List<File> m_dataSet = new ArrayList<>();
+
+  /* Initializations */
+
+  public BrowserRecyclerAdapter (OnFileClickListener clickListener)
+  {
+    m_clickListener = clickListener;
+  }
+
+  /* Property methods */
+
+  public void updateDataSet (List<File> dataSet)
+  {
+    m_dataSet.clear();
+    if (dataSet != null)
+    {
+      m_dataSet.addAll(dataSet);
+    }
+    notifyDataSetChanged();
+  }
+
+  /* Adapter methods */
+
+  @Override
+  public int getItemCount ()
+  {
+    return m_dataSet.size();
+  }
+
+  @Override
+  public int getItemViewType (int position)
+  {
+    File file = m_dataSet.get(position);
+    String format = file.getFormat();
+    return Objects.equal(FileConstants.FORMAT_CATEGORY, format) ? 0 : 1;
+  }
+
+  @Override
+  public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent, int viewType)
+  {
+    RecyclerView.ViewHolder holder;
+
+    LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+    if (viewType == 0)
+    {
+      FileCategoryItemBinding binding =
+          DataBindingUtil.inflate(inflater, R.layout.file_category_item, parent, false);
+      holder = new CategoryViewHolder(binding);
+    }
+    else
+    {
+      FileItemBinding binding =
+          DataBindingUtil.inflate(inflater, R.layout.file_item, parent, false);
+      holder = new FileViewHolder(binding);
+    }
+    return holder;
+  }
+
+  @Override
+  public void onBindViewHolder (RecyclerView.ViewHolder holder, int position)
+  {
+    final int type = getItemViewType(position);
+    final File file = m_dataSet.get(position);
+
+    if (type == 0)
+    {
+      ((CategoryViewHolder) holder).onBind(position, file);
+    }
+    else
+    {
+      ((FileViewHolder) holder).onBind(position, file);
+    }
+
+    holder.itemView.setOnClickListener(v ->
+    {
+      m_clickListener.onFileClicked(file);
+    });
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="home_title">Welcome</string>
+  <string name="home_extremities">Extremities</string>
+  <string name="home_subchin">Subchondroplasty</string>
+  <string name="home_sportsmed">Sportsmed</string>
+</resources>

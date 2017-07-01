@@ -1,0 +1,38 @@
+package sg.totalebizsolutions.zimmer.core.file.storage;
+
+import java.util.List;
+
+import sg.totalebizsolutions.zimmer.core.file.File;
+
+public interface FileStorage
+{
+  /**
+   * Find all files with specified name from specified root folder id.
+   */
+  List<File> getIncludeSubFiles (long fileID, List<String> categoryTags);
+
+  /**
+   * Retrieves file instance with specified ID.
+   */
+  File get (long fileID);
+
+  /**
+   * Insert or replace file instance.
+   */
+  long insertOrReplace (File file);
+
+  /**
+   * Bulk insert or replace file instances.
+   */
+  void bulkInsertOrReplace (List<File> files);
+
+  /**
+   * Delete an existing file instance with specified ID.
+   */
+  void delete (long fileID);
+
+  /**
+   * Clear all existing data.
+   */
+  void clearAll ();
+}

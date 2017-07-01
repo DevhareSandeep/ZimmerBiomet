@@ -1,0 +1,121 @@
+package sg.totalebizsolutions.zimmer.views.settings;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import sg.totalebizsolutions.foundation.view.BaseActivity;
+import sg.totalebizsolutions.foundation.view.navigation.NavigationItemFragment;
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.databinding.SettingsFragmentBinding;
+import sg.totalebizsolutions.zimmer.databinding.SettingsItemBinding;
+import sg.totalebizsolutions.zimmer.misc.widgets.LinearDividerItemDecoration;
+import sg.totalebizsolutions.zimmer.util.AlertDialogFactory;
+import sg.totalebizsolutions.zimmer.views.login.LoginActivity;
+import sg.totalebizsolutions.zimmer.views.privacy.PrivacyPolicyActivity;
+
+public class SettingsFragment extends NavigationItemFragment
+{
+  /* Life-cycle methods */
+
+  @Nullable
+  @Override
+  public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container,
+      @Nullable Bundle savedInstanceState)
+  {
+    final Context context = getContext();
+
+    /* Setup view. */
+    SettingsFragmentBinding binding =
+        DataBindingUtil.inflate(inflater, R.layout.settings_fragment, container, false);
+
+    RecyclerView recyclerView = (RecyclerView) binding.getRoot();
+    recyclerView.setAdapter(new InternalReyclerAdapter());
+    recyclerView.setLayoutManager(new LinearLayoutManager(context));
+    recyclerView.addItemDecoration(new LinearDividerItemDecoration());
+
+    Toolbar toolbar = getToolbar();
+    toolbar.setTitle(R.string.settings_title);
+
+    return binding.getRoot();
+  }
+
+  private class InternalReyclerAdapter extends RecyclerView.Adapter
+  {
+    @Override
+    public int getItemCount ()
+    {
+      return 2;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder (ViewGroup parent, int viewType)
+    {
+      LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+      SettingsItemBinding binding =
+          DataBindingUtil.inflate(inflater, R.layout.settings_item, parent, false);
+      return new InternalViewHolder(binding);
+    }
+
+    @Override
+    public void onBindViewHolder (RecyclerView.ViewHolder holder, int position)
+    {
+      ((InternalViewHolder) holder).onBind(position);
+
+      holder.itemView.setOnClickListener(v ->
+      {
+        final Context context = getContext();
+        final Activity activity = getActivity();
+
+        if (position == 0)
+        {
+          Intent intent = new Intent(activity, PrivacyPolicyActivity.class);
+          ((BaseActivity) activity).presentActivity(intent);
+        }
+        else
+        {
+          AlertDialogFactory.buildAlertDialog(context, 0, R.string.settings_logout_confirmation,
+              R.string.yes, R.string.no, (dialog, which) ->
+          {
+            if (which == DialogInterface.BUTTON_POSITIVE)
+            {
+              Intent intent = new Intent(context, LoginActivity.class);
+              activity.startActivity(intent);
+              activity.finish();
+              activity.overridePendingTransition(R.anim.activity_show, R.anim.activity_exit);
+            }
+          }).show();
+        }
+      });
+    }
+  }
+
+  private class InternalViewHolder extends RecyclerView.ViewHolder
+  {
+    private SettingsItemBinding m_binding;
+
+    InternalViewHolder (SettingsItemBinding binding)
+    {
+      super(binding.getRoot());
+      m_binding = binding;
+    }
+
+    void onBind (int position)
+    {
+      m_binding.imageView.setImageResource(
+          position == 0 ? R.drawable.ic_privacy_policy : R.drawable.ic_logout);
+      m_binding.titleTextView.setText(
+          position == 0 ? R.string.settings_privacy_policy : R.string.settings_logout);
+    }
+  }
+}

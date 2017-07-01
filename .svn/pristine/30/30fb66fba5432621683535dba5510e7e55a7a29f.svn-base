@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+  <data>
+    <import type="sg.totalebizsolutions.zimmer.util.TypefaceFactory"/>
+  </data>
+  <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                               android:layout_width="match_parent"
+                                               android:layout_height="56dp"
+                                               android:background="@drawable/list_item_selector">
+    <TextView android:id="@+id/acronym_text_view"
+              android:layout_width="40dp"
+              android:layout_height="40dp"
+              android:layout_marginLeft="16dp"
+              android:background="@drawable/category_bg"
+              android:gravity="center"
+              android:textColor="@color/white"
+              android:textSize="21dp"
+              android:typeface="@{TypefaceFactory.getTypeFaceForId(context, TypefaceFactory.RobotoRegular)}"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintLeft_toLeftOf="parent"
+              app:layout_constraintTop_toTopOf="parent"
+              tools:ignore="RtlHardcoded,SpUsage"
+              tools:src="@drawable/ic_pdf"/>
+    <TextView android:id="@+id/title_text_view"
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_alignParentBottom="true"
+              android:layout_marginLeft="16dp"
+              android:layout_marginRight="8dp"
+              android:ellipsize="end"
+              android:maxLines="2"
+              android:textColor="@color/dark"
+              android:textSize="14dp"
+              android:typeface="@{TypefaceFactory.getTypeFaceForId(context, TypefaceFactory.RobotoRegular)}"
+              app:layout_constraintBottom_toBottomOf="parent"
+              app:layout_constraintLeft_toRightOf="@+id/acronym_text_view"
+              app:layout_constraintRight_toLeftOf="@+id/arrow_image_view"
+              app:layout_constraintTop_toTopOf="parent"
+              tools:ignore="RtlHardcoded,SpUsage"
+              tools:text="Lorem Impsum"/>
+    <ImageView android:id="@+id/arrow_image_view"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginRight="8dp"
+               android:src="@drawable/arrow_right"
+               app:layout_constraintBottom_toBottomOf="parent"
+               app:layout_constraintRight_toRightOf="parent"
+               app:layout_constraintTop_toTopOf="parent"/>
+  </android.support.constraint.ConstraintLayout>
+</layout>

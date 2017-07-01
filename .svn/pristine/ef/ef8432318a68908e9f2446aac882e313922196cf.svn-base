@@ -1,0 +1,212 @@
+package sg.totalebizsolutions.zimmer.views.explorer.file;
+
+import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+
+import com.google.common.base.Objects;
+
+import java.util.List;
+
+import sg.totalebizsolutions.foundation.util.Validation;
+import sg.totalebizsolutions.foundation.view.navigation.NavigationHandler;
+import sg.totalebizsolutions.foundation.view.navigation.NavigationItemFragment;
+import sg.totalebizsolutions.foundation.widgets.SimpleTextWatch;
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.core.Callback;
+import sg.totalebizsolutions.zimmer.core.ZimmerServices;
+import sg.totalebizsolutions.zimmer.core.file.File;
+import sg.totalebizsolutions.zimmer.core.file.FileConstants;
+import sg.totalebizsolutions.zimmer.databinding.FileBrowserFragmentBinding;
+import sg.totalebizsolutions.zimmer.misc.widgets.LinearDividerItemDecoration;
+import sg.totalebizsolutions.zimmer.views.explorer.OnFileClickListener;
+import sg.totalebizsolutions.zimmer.views.explorer.file.details.FileFragment;
+
+public class FileBrowserFragment extends NavigationItemFragment
+{
+  /* Properties */
+
+  private static final String BUNDLE_FILE_ID = "fileID";
+  private static final String BUNDLE_TITLE = "title";
+
+  private long m_fileID;
+  private String m_title;
+  private File m_file;
+
+  private FileBrowserFragmentBinding m_binding;
+
+  private List<File> m_fileSearchList;
+  private Callback<List<File>> m_callback;
+
+  private BrowserRecyclerAdapter m_adapter;
+
+  private NavigationHandler m_mainNavigationHandler;
+
+  /* Creational */
+
+  public FileBrowserFragment ()
+  {
+  }
+
+  public static FileBrowserFragment newInstance (long fileID, String title)
+  {
+    FileBrowserFragment fragment = new FileBrowserFragment();
+    fragment.m_fileID = fileID;
+    Bundle args = new Bundle();
+    args.putLong(BUNDLE_FILE_ID, fileID);
+    args.putString(BUNDLE_TITLE, title);
+    fragment.setArguments(args);
+    return fragment;
+  }
+
+  /* Life-cycle methods */
+
+  @Override
+  public void onCreate (Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+
+    Bundle args = getArguments();
+    m_fileID = args.getLong(BUNDLE_FILE_ID);
+    m_title = args.getString(BUNDLE_TITLE);
+    m_file = getFile();
+
+    OnFileClickListener fileClickListener = (file) ->
+    {
+      if (Objects.equal(file.getFormat(), FileConstants.FORMAT_CATEGORY))
+      {
+        pushFragmentToNavigation(FileBrowserFragment.newInstance(file.getID(),
+            file.getDisplayName()));
+      }
+      else
+      {
+        m_mainNavigationHandler.pushFragmentToNavigation(
+            FileFragment.newInstance(file), null, true);
+      }
+    };
+    m_adapter = new BrowserRecyclerAdapter(fileClickListener);
+  }
+
+  @Nullable
+  @Override
+  public View onCreateView (LayoutInflater inflater, @Nullable ViewGroup container,
+                            @Nullable Bundle savedInstanceState)
+  {
+    final Context context = getContext();
+
+    /* Setup view. */
+
+    FileBrowserFragmentBinding binding =
+        DataBindingUtil.inflate(inflater, R.layout.file_browser_fragment, container, false);
+    m_binding = binding;
+
+    binding.recyclerView.setAdapter(m_adapter);
+    binding.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+    binding.recyclerView.addItemDecoration(new LinearDividerItemDecoration());
+
+    binding.searchEditText.addTextChangedListener(new SimpleTextWatch()
+    {
+      @Override
+      public void afterTextChanged (Editable editable)
+      {
+        String text = editable.toString();
+        searchFile(text);
+
+        boolean isEmpty = Validation.isEmpty(text);
+
+        m_binding.searchHeader.getRoot().setVisibility(!isEmpty ? View.VISIBLE : View.GONE);
+        getToolbar().setTitle(!isEmpty ? getString(R.string.search) : m_title);
+      }
+    });
+
+    binding.searchEditText.setOnEditorActionListener((v, actionId, event) ->
+    {
+      if (actionId == EditorInfo.IME_ACTION_SEARCH)
+      {
+        hideKeyboard();
+        return true;
+      }
+      return false;
+    });
+
+    binding.searchHeader.clearAllTextView.setOnClickListener(v ->
+    {
+      hideKeyboard();
+      binding.searchEditText.setText(null);
+    });
+
+    Toolbar toolbar = getToolbar();
+    toolbar.setTitle(m_title);
+
+    return binding.getRoot();
+  }
+
+  @Override
+  public void onViewCreated (View view, Bundle savedInstanceState)
+  {
+    super.onViewCreated(view, savedInstanceState);
+    updateList();
+  }
+
+  /* Contract methods */
+
+  public void setMainNavigatioNhandler (NavigationHandler navigatioNhandler)
+  {
+    m_mainNavigationHandler = navigatioNhandler;
+  }
+
+  /* Proeprty methods */
+
+  /**
+   * Lazy-loaded method to load file instance.
+   */
+  public File getFile ()
+  {
+    if (m_file == null)
+    {
+      m_file = ZimmerServices.getInstance().getFileService().getFile(m_fileID);
+    }
+    return m_file;
+  }
+
+  private void searchFile (String fileName)
+  {
+    if (Validation.isEmpty(fileName))
+    {
+      m_fileSearchList = null;
+      m_callback = null;
+      updateList();
+      return;
+    }
+
+    Callback<List<File>> callback = new Callback<List<File>>()
+    {
+      @Override
+      public void onFinished (int status, String message, List<File> data)
+      {
+        if (this != m_callback)
+        {
+          return;
+        }
+
+        m_fileSearchList = data;
+        updateList();
+      }
+    };
+    m_callback = callback;
+    ZimmerServices.getInstance().getFileService().searchFile(m_fileID, fileName, null, callback);
+  }
+
+  private void updateList ()
+  {
+    m_adapter.updateDataSet(m_fileSearchList == null ? m_file.getSubFiles() : m_fileSearchList);
+  }
+}

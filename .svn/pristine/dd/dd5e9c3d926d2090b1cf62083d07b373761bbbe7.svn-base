@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="login">Login</string>
+  <string name="login_username">Username</string>
+  <string name="login_password">Password</string>
+
+  <string name="login_invalid">Invalid login/password.</string>
+  <string name="login_progress">Logging in. Please wait&#8230;</string>
+</resources>

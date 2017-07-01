@@ -1,0 +1,24 @@
+<resources>
+
+
+    <string name="search">Search</string>
+    <string name="search_result">Search Results</string>
+    <string name="search_clear">Clear all</string>
+
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="done">Done</string>
+    <string name="please_wait">Please wait&#8230;</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="description">Media Controls</string>
+    <string-array name="langs_Array">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Bangla</item>
+        <item>Marathi</item>
+    </string-array>
+
+
+
+</resources>

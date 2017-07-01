@@ -1,0 +1,47 @@
+package sg.totalebizsolutions.zimmer.views.privacy;
+
+import android.content.Intent;
+import android.content.res.Resources;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+
+import sg.totalebizsolutions.foundation.util.DrawableUtil;
+import sg.totalebizsolutions.foundation.util.ViewHelper;
+import sg.totalebizsolutions.foundation.view.BaseActivity;
+import sg.totalebizsolutions.zimmer.R;
+import sg.totalebizsolutions.zimmer.ZimmerActivity;
+import sg.totalebizsolutions.zimmer.databinding.PrivacyPolicyActivityBinding;
+
+public class PrivacyPolicyActivity extends BaseActivity
+{
+  /* Life-cycle methods */
+
+  @Override
+  protected void onCreate (Bundle savedInstanceState)
+  {
+    super.onCreate(savedInstanceState);
+    PrivacyPolicyActivityBinding binding =
+        DataBindingUtil.setContentView(this, R.layout.privacy_policy_activity);
+
+    final Resources res = getResources();
+
+    ViewHelper.setBackgroundDrawable(
+        binding.doneButton,
+        DrawableUtil.createResourceDrawable(res, R.drawable.button_red_bg));
+
+    binding.doneButton.setOnClickListener((v) ->
+    {
+      if (isPresented())
+      {
+        finish();
+      }
+      else
+      {
+        Intent intent = new Intent(PrivacyPolicyActivity.this, ZimmerActivity.class);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(R.anim.activity_show, R.anim.activity_exit);
+      }
+    });
+  }
+}

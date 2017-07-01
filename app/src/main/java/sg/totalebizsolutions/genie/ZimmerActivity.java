@@ -1,0 +1,29 @@
+package sg.totalebizsolutions.genie;
+
+import android.os.Bundle;
+import android.view.KeyEvent;
+
+import sg.totalebizsolutions.foundation.view.BaseActivity;
+import sg.totalebizsolutions.genie.views.MainNavigationFragment;
+
+public class ZimmerActivity extends BaseActivity {
+  /* Life-cycle callbacks */
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+
+
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        boolean handled = ((MainNavigationFragment)
+                retrieveFragmentByID(R.id.fragment)).onKeyDown(keyCode, event);
+        if (!handled) {
+            handled = super.onKeyDown(keyCode, event);
+        }
+        return handled;
+    }
+}

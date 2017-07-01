@@ -1,0 +1,55 @@
+package sg.totalebizsolutions.genie.views.explorer;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.ColorFilter;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+public class TabDrawable extends Drawable
+{
+  private int m_alpha = 255;
+
+  private int m_storeWidth;
+  private Paint m_paint;
+
+  public TabDrawable (Context context, int color)
+  {
+    float dpi = context.getResources().getDisplayMetrics().density;
+    m_storeWidth = (int) (3.5 * dpi);
+
+    m_paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    m_paint.setColor(color);
+  }
+
+  @Override
+  public void draw (@NonNull Canvas canvas)
+  {
+    Rect rect = getBounds();
+    int width = rect.width();
+    int height = rect.height();
+
+    canvas.drawRect(0, height - m_storeWidth, width, height, m_paint);
+  }
+
+  @Override
+  public void setAlpha (@IntRange(from = 0, to = 255) int alpha)
+  {
+    m_alpha = alpha;
+  }
+
+  @Override
+  public void setColorFilter (@Nullable ColorFilter colorFilter)
+  {
+  }
+
+  @Override
+  public int getOpacity ()
+  {
+    return m_alpha;
+  }
+}

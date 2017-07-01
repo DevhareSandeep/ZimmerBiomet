@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+  <data>
+    <import type="sg.totalebizsolutions.genie.util.TypefaceFactory"/>
+  </data>
+  <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+    <sg.totalebizsolutions.genie.misc.widgets.AppToolBar
+        android:id="@+id/toolbar"
+                                                          android:layout_width="match_parent"
+                                                          android:layout_height="@dimen/toolbar"
+                                                          android:background="@color/colorPrimary"
+                                                          android:minHeight="48dp"
+                                                          android:paddingTop="@dimen/status_bar">
+      <TextView android:id="@+id/title_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:typeface="@{TypefaceFactory.getTypeFaceForId(context, TypefaceFactory.RobotoRegular)}"
+                tools:ignore="SpUsage"
+                tools:text="navigation Title"/>
+    </sg.totalebizsolutions.genie.misc.widgets.AppToolBar>
+    <FrameLayout android:id="@+id/content"
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent"
+                 android:layout_below="@+id/toolbar"/>
+  </RelativeLayout>
+</layout>

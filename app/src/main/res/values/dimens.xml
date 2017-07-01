@@ -1,0 +1,4 @@
+<resources>
+  <dimen name="status_bar">0dp</dimen>
+  <dimen name="toolbar">48dp</dimen>
+</resources>
